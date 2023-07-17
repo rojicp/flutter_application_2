@@ -3,17 +3,17 @@ import 'students.dart';
 import 'counter.dart';
 
 void main() {
-  runApp(const TrainingApp());
+  runApp(const MaterialApp(home: HomePage()));
 }
 
-class TrainingApp extends StatefulWidget {
-  const TrainingApp({super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
   @override
-  State<TrainingApp> createState() => _TrainingAppState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _TrainingAppState extends State<TrainingApp> {
+class _HomePageState extends State<HomePage> {
   String pageCaption = "Home Page";
   String pageName = "home";
 
@@ -22,16 +22,11 @@ class _TrainingAppState extends State<TrainingApp> {
       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
         ElevatedButton(
           onPressed: () {
-            setState(() {
-              pageName = "counter";
-              pageCaption = "Counter Example";
-            });
-
-            // Navigator.push(context, MaterialPageRoute(
-            //   builder: (context) {
-            //     return CounterWidget();
-            //   },
-            // ));
+            Navigator.push(context, MaterialPageRoute(
+              builder: (context) {
+                return const CounterWidget();
+              },
+            ));
           },
           child: const Text("Counter Example"),
         ),
@@ -40,12 +35,13 @@ class _TrainingAppState extends State<TrainingApp> {
         ),
         ElevatedButton(
           onPressed: () {
-            setState(() {
-              pageName = "student";
-              pageCaption = "Student Page";
-            });
+            Navigator.push(context, MaterialPageRoute(
+              builder: (context) {
+                return const StudentsPage();
+              },
+            ));
           },
-          child: const Text("Data Entry Page"),
+          child: const Text("Students Entry Page"),
         ),
       ]),
     );
@@ -53,41 +49,15 @@ class _TrainingAppState extends State<TrainingApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: "This is a Title",
-      home: Scaffold(
-        appBar: AppBar(
-          title: Row(
-            children: [
-              Text(pageCaption),
-              const Spacer(),
-              ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      pageName = "home";
-                      pageCaption = "Home Page";
-                    });
-                  },
-                  child: const Icon(Icons.close)),
-              const SizedBox(
-                width: 5,
-              ),
-            ],
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Row(
+          children: [
+            Text(pageCaption),
+          ],
         ),
-        body: Builder(builder: (context) {
-          switch (pageName) {
-            case "counter":
-              return const CounterWidget();
-
-            case "student":
-              return const StudentPage();
-
-            default:
-              return homePageButtons();
-          }
-        }),
       ),
+      body: homePageButtons(),
     );
   }
 }
