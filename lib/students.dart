@@ -86,7 +86,7 @@ class _StudentsPageState extends State<StudentsPage> {
         'student_age': studentAge.text,
       };
 
-      Uri url = Uri.parse("localhost:8080/student/create");
+      Uri url = Uri.parse("http://localhost:8080/student/create");
 
       final response = await http.post(
         url,
