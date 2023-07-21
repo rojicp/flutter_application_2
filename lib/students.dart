@@ -14,6 +14,7 @@ class _StudentsPageState extends State<StudentsPage> {
   TextEditingController studentAddress = TextEditingController();
   TextEditingController studentAge = TextEditingController();
   final formGlobalKey = GlobalKey<FormState>();
+  String studentId = "";
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +26,7 @@ class _StudentsPageState extends State<StudentsPage> {
             const Spacer(),
             ElevatedButton(
                 onPressed: () {
-                  studentName.text = "";
-                  studentAddress.text = "";
-                  studentAge.text = "";
+                  clearScreen();
                 },
                 child: const Text("New")),
             ElevatedButton(
@@ -82,11 +81,15 @@ class _StudentsPageState extends State<StudentsPage> {
   Future<void> saveRecord() async {
     try {
       Map<String, dynamic> body = {
+        'id': studentId,
         'student_name': studentName.text,
         'student_age': studentAge.text,
       };
 
       Uri url = Uri.parse("http://localhost:8080/student/create");
+      if (studentId.isNotEmpty) {
+        url = Uri.parse("http://localhost:8080/student/update");
+      }
 
       final response = await http.post(
         url,
@@ -101,12 +104,31 @@ class _StudentsPageState extends State<StudentsPage> {
       Map<String, dynamic> data = jsonDecode(response.body);
       String msg = data["message"];
       if (msg.toLowerCase().contains("success")) {
+        showMessage(msg);
+        if (studentId.isEmpty) {
+          studentId = data["id"].toString();
+        }
+        //clearScreen();
         print("msg = $msg");
       } else {
+        showMessage(msg);
         print("msg = $msg");
       }
     } catch (e) {
+      showMessage("Error : $e");
       print("msg = $e}");
     }
+  }
+
+  void clearScreen() {
+    studentId = "";
+    studentName.text = "";
+    studentAddress.text = "";
+    studentAge.text = "";
+  }
+
+  showMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(backgroundColor: Colors.blueAccent, content: Text(message)));
   }
 }
